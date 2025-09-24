@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="vi" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vote Results – Post Battle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          boxShadow: { soft: '0 10px 30px -12px rgba(0,0,0,.25)' },
+          colors: { brand: { DEFAULT: '#3b82f6', 50: '#eff6ff', 100: '#dbeafe', 600: '#2563eb', 700: '#1d4ed8' } }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html,
+    body {
+      font-family: Inter, ui-sans-serif, system-ui;
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100">
+  <!-- Header -->
+  <header
+    class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/50 border-b border-slate-200/60 dark:border-slate-800/60">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
+      <a href="./index.html"
+        class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60">
+        ← Trang vote
+      </a>
+      <h1 class="ml-2 text-lg font-semibold">Kết quả bình chọn</h1>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="toggleTheme"
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60">Chế
+          độ tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+    <!-- Controls -->
+    <section class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-2">
+        <button id="refreshBtn"
+          class="rounded-xl bg-brand text-white font-semibold px-4 py-2 hover:bg-brand-600 active:bg-brand-700">Làm
+          mới</button>
+        <button id="exportBtn"
+          class="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/60">Xuất
+          CSV</button>
+      </div>
+      <div class="flex items-center gap-2">
+        <input id="searchInput" type="text" placeholder="Tìm theo tên/chức vụ..."
+          class="w-[260px] rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-3 py-2 outline-none focus:ring-4 focus:ring-brand/30" />
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 shadow-soft">
+        <div class="text-sm text-slate-500">Tổng phiếu</div>
+        <div id="totalVotes" class="text-2xl font-bold mt-1">0</div>
+      </div>
+      <div
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 shadow-soft">
+        <div class="text-sm text-slate-500">Post A</div>
+        <div class="text-2xl font-bold mt-1"><span id="countA">0</span> <span
+            class="text-sm text-slate-500 font-medium">(<span id="pA">0</span>%)</span></div>
+        <div class="mt-2 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+          <div id="barA" class="h-full bg-brand/80" style="width:0%"></div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 shadow-soft">
+        <div class="text-sm text-slate-500">Post B</div>
+        <div class="text-2xl font-bold mt-1"><span id="countB">0</span> <span
+            class="text-sm text-slate-500 font-medium">(<span id="pB">0</span>%)</span></div>
+        <div class="mt-2 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+          <div id="barB" class="h-full bg-fuchsia-600/80" style="width:0%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <section
+      class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 shadow-soft">
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100/80 dark:bg-slate-800/60">
+            <tr>
+              <th class="px-4 py-3 text-left font-semibold">#</th>
+              <th class="px-4 py-3 text-left font-semibold">Họ tên</th>
+              <th class="px-4 py-3 text-left font-semibold">Chức vụ</th>
+              <th class="px-4 py-3 text-left font-semibold">Lựa chọn</th>
+              <th class="px-4 py-3 text-left font-semibold">Thời gian</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="px-4 py-8 text-center text-slate-500 hidden">Chưa có phiếu nào.</div>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-6xl px-4 pb-10 pt-6 text-center text-sm text-slate-500">Dangth © 2025</footer>
+
+  <script>
+    /*****************
+     * CONFIG
+     *****************/
+    // Thay bằng project của bạn
+    const FIREBASE_DB_URL = 'https://thep-taydo-default-rtdb.asia-southeast1.firebasedatabase.app';
+    const FIREBASE_DB_AUTH = ''; // ví dụ '?auth=ID_TOKEN'
+    const BATTLE_ID = 'battle-2025-08-30';
+
+    /*****************
+     * THEME TOGGLE
+     *****************/
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById('toggleTheme');
+    const pref = localStorage.getItem('theme');
+    if (pref === 'dark' || (!pref && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    }
+    toggleBtn?.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    /*****************
+     * STATE
+     *****************/
+    let votes = []; // {name, role, choice, ts}
+
+    const tableBody = document.getElementById('tableBody');
+    const emptyState = document.getElementById('emptyState');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    const countAEl = document.getElementById('countA');
+    const countBEl = document.getElementById('countB');
+    const totalEl = document.getElementById('totalVotes');
+    const barAEl = document.getElementById('barA');
+    const barBEl = document.getElementById('barB');
+    const pAEl = document.getElementById('pA');
+    const pBEl = document.getElementById('pB');
+
+    function fmtTime(ts) {
+      try { return new Date(Number(ts)).toLocaleString('vi-VN'); } catch { return '' }
+    }
+
+    function renderSummary(list) {
+      const a = list.filter(v => String(v.choice).toUpperCase() === 'A').length;
+      const b = list.filter(v => String(v.choice).toUpperCase() === 'B').length;
+      const total = a + b;
+      let pA = 50, pB = 50;
+      if (total > 0) { pA = Math.round(a / total * 100); pB = 100 - pA; }
+      countAEl.textContent = a;
+      countBEl.textContent = b;
+      totalEl.textContent = total;
+      barAEl.style.width = pA + '%';
+      barBEl.style.width = pB + '%';
+      pAEl.textContent = pA;
+      pBEl.textContent = pB;
+    }
+
+    function renderTable(list) {
+      const q = searchInput.value.trim().toLowerCase();
+      const filtered = q ? list.filter(v => (v.name || '').toLowerCase().includes(q) || (v.role || '').toLowerCase().includes(q)) : list;
+      tableBody.innerHTML = '';
+      if (filtered.length === 0) { emptyState.classList.remove('hidden'); return; } else { emptyState.classList.add('hidden'); }
+      filtered.forEach((v, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t border-slate-200 dark:border-slate-800 hover:bg-slate-50/70 dark:hover:bg-slate-800/40';
+        tr.innerHTML = `
+          <td class="px-4 py-3">${idx + 1}</td>
+          <td class="px-4 py-3">${escapeHtml(v.name || '')}</td>
+          <td class="px-4 py-3">${escapeHtml(v.role || '')}</td>
+          <td class="px-4 py-3 font-medium">${escapeHtml(String(v.choice || ''))}</td>
+          <td class="px-4 py-3 text-slate-500">${fmtTime(v.ts)}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    async function fetchVotes() {
+      const res = await fetch(`${FIREBASE_DB_URL}/votes/${BATTLE_ID}.json${FIREBASE_DB_AUTH}`);
+      const data = await res.json();
+      const list = [];
+      if (data) {
+        for (const k in data) {
+          const v = data[k];
+          if (!v || !v.choice) continue;
+          list.push({ name: v.name || '', role: v.role || '', choice: String(v.choice).toUpperCase(), ts: v.ts || 0 });
+        }
+      }
+      // mới nhất lên đầu
+      list.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+      votes = list;
+    }
+
+    async function refresh() {
+      try {
+        await fetchVotes();
+        renderSummary(votes);
+        renderTable(votes);
+      } catch (e) { console.error(e); }
+    }
+
+    // Export CSV
+    function toCSV(rows) {
+      const header = ['name', 'role', 'choice', 'timestamp'];
+      const lines = [header.join(',')];
+      rows.forEach(r => {
+        const line = [r.name, r.role, r.choice, new Date(Number(r.ts || 0)).toISOString()].map(x => '"' + String(x).replaceAll('"', '""') + '"').join(',');
+        lines.push(line);
+      });
+      return lines.join('\n');
+    }
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // Events
+    refreshBtn.addEventListener('click', refresh);
+    exportBtn.addEventListener('click', () => download(`votes-${BATTLE_ID}.csv`, toCSV(votes)));
+    searchInput.addEventListener('input', () => renderTable(votes));
+
+    // Init
+    refresh();
+    setInterval(refresh, 15000);
+  </script>
+</body>
+
+</html>
