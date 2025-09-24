@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="vi" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vote Post Battle</title>
+  <!-- Tailwind Play CDN (cho demo). Khi production, build Tailwind để tree-shake. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Apple Color Emoji', 'Segoe UI Emoji'] },
+          boxShadow: { soft: '0 10px 30px -12px rgba(0,0,0,.25)' },
+          colors: {
+            brand: {
+              DEFAULT: '#3b82f6',
+              50: '#eff6ff',
+              100: '#dbeafe',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html,
+    body {
+      font-family: Inter, ui-sans-serif, system-ui;
+    }
+  </style>
+</head>
+
+<body
+  class="h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100">
+  <!-- Header -->
+  <header
+    class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/50 border-b border-slate-200/60 dark:border-slate-800/60">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand"><svg
+            xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3l2.39 4.84 5.34.78-3.86 3.76.91 5.31L12 15.9l-4.78 2.79.91-5.31L4.27 8.62l5.34-.78L12 3z" />
+          </svg></span>
+        <span class="text-lg font-semibold tracking-tight">Vote Post Battle</span>
+      </div>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="toggleTheme"
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60 transition">
+          <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 hidden dark:inline"
+            fill="currentColor">
+            <path
+              d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.8 1.8-1.8zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm8.83-19.16l-1.79-1.8-1.8 1.8 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.8 1.41 1.41 1.8-1.79-1.41-1.42zM17.24 19.16l-1.41 1.42 1.8 1.79 1.41-1.41-1.8-1.8zM12 5a7 7 0 100 14 7 7 0 000-14z" />
+          </svg>
+          <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 dark:hidden"
+            fill="currentColor">
+            <path d="M12 2a9.99 9.99 0 00-8.77 5.07A10 10 0 1012 2z" />
+          </svg>
+          <span class="hidden sm:inline">Chế độ tối</span>
+        </button>
+        <a href="#rules" class="text-sm underline-offset-4 hover:underline">Luật chơi</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-6xl px-4 py-8">
+    <!-- Hero / Input -->
+    <section class="mb-8">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">So kè hai bài post Facebook</h1>
+        <p class="text-slate-600 dark:text-slate-400 mt-2">Dán link hai bài viết, tải xem trước và mở vote công bằng.
+        </p>
+      </div>
+
+      <!-- <div
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 shadow-soft p-4 sm:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-center">
+          <div class="grid grid-cols-1 gap-3">
+            <label class="sr-only" for="urlA">Link bài viết A</label>
+            <input id="urlA" type="url" placeholder="Dán link bài viết A"
+              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-3 outline-none focus:ring-4 focus:ring-brand/30" />
+            <label class="sr-only" for="urlB">Link bài viết B</label>
+            <input id="urlB" type="url" placeholder="Dán link bài viết B"
+              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-3 outline-none focus:ring-4 focus:ring-brand/30" />
+          </div>
+          <button id="previewBtn"
+            class="md:h-[92px] rounded-xl bg-brand text-white font-semibold px-5 py-3 hover:bg-brand-600 active:bg-brand-700 transition shadow-soft">Tải
+            xem trước</button>
+        </div>
+        <p class="text-xs text-slate-500 mt-3">Gợi ý: Sử dụng URL công khai của bài viết. Website không liên kết với
+          Meta/Facebook.</p>
+      </div> -->
+    </section>
+
+    <!-- Battle -->
+    <section id="battle" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card A -->
+      <article
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+        <header class="flex items-center gap-3 mb-4">
+          <span
+            class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 inline-flex items-center justify-center"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <path
+                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+            </svg></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold truncate">Nhóm Lễ tân</h3>
+            <p class="text-xs text-slate-500">2 giờ trước</p>
+          </div>
+          <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Tùy chọn"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg></button>
+        </header>
+        <div class="aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+          <img id="imgA"
+            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop"
+            class="h-full w-full object-cover" alt="Post A" />
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700"><svg
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                <path
+                  d="M2 12c0 3.9 3.1 7 7 7h7c3.3 0 6-2.7 6-6 0-2.9-2.1-5.3-4.8-5.9C16.6 4.6 14 3 11 3 7.1 3 4 6.1 4 10v1H2z" />
+              </svg></span><span id="countA">100</span></div>
+          <button data-vote="A"
+            class="voteBtn rounded-xl bg-brand text-white font-semibold px-4 py-2.5 hover:bg-brand-600 active:bg-brand-700 transition">Vote</button>
+        </div>
+      </article>
+
+      <!-- Card B -->
+      <article
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+        <header class="flex items-center gap-3 mb-4">
+          <span
+            class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 inline-flex items-center justify-center"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <path
+                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+            </svg></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold truncate">P. KTTC</h3>
+            <p class="text-xs text-slate-500">5 giờ trước</p>
+          </div>
+          <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Tùy chọn"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg></button>
+        </header>
+        <div class="aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+          <img id="imgB"
+            src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=1200&auto=format&fit=crop"
+            class="h-full w-full object-cover" alt="Post B" />
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-200/60 dark:bg-rose-900/40"><svg
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.61C11.09 5.01 12.76 4 14.5 4 17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg></span><span id="countB">120</span></div>
+          <button data-vote="B"
+            class="voteBtn rounded-xl bg-brand text-white font-semibold px-4 py-2.5 hover:bg-brand-600 active:bg-brand-700 transition">Vote</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Results -->
+    <section
+      class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div class="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="barA" class="h-full bg-brand/80 transition-all" style="width:47%"></div>
+          </div>
+          <div class="mt-2 text-sm font-medium"><span id="percentA">47%</span></div>
+        </div>
+        <div>
+          <div class="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="barB" class="h-full bg-fuchsia-600/80 transition-all" style="width:53%"></div>
+          </div>
+          <div class="mt-2 text-right text-sm font-medium"><span id="percentB">53%</span> <span
+              class="text-xs text-slate-500">đang dẫn</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Share / Save -->
+    <section class="mt-6 flex items-center justify-center gap-3">
+      <button id="saveBtn"
+        class="rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/60"><svg
+          xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm6 0v7h7" />
+        </svg></button>
+      <button id="shareBtn"
+        class="rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/60"><svg
+          xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M14 9l-1-1-6 6 1 1 6-6zm2-6a4 4 0 100 8 4 4 0 000-8zM6 14a4 4 0 100 8 4 4 0 000-8zm12 0a4 4 0 100 8 4 4 0 000-8z" />
+        </svg></button>
+      <span id="toast" class="text-sm text-slate-500 hidden">Đã sao chép liên kết.</span>
+    </section>
+
+    <!-- Anti-abuse -->
+    <section id="rules" class="mt-8 text-center">
+      <div
+        class="inline-flex items-center gap-2 rounded-2xl px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60">
+        <span
+          class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600"><svg
+            xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg></span>
+        <p class="text-sm">Anti‑abuse: giới hạn IP/tần suất, cookie + token CSRF. (Triển khai ở backend)</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mx-auto max-w-6xl px-4 pb-10 pt-6 text-center text-sm text-slate-500">
+    Không liên kết với Meta/Facebook. © 2025.
+  </footer>
+
+  <script>
+    // Dark mode toggle
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById('toggleTheme');
+    const pref = localStorage.getItem('theme');
+    if (pref === 'dark' || (!pref && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    }
+    toggleBtn.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Demo preview (chỉ fake): nếu có URL ảnh hợp lệ, thay preview
+    const previewBtn = document.getElementById('previewBtn');
+    previewBtn.addEventListener('click', () => {
+      const a = document.getElementById('urlA').value.trim();
+      const b = document.getElementById('urlB').value.trim();
+      if (a) document.getElementById('imgA').src = a;
+      if (b) document.getElementById('imgB').src = b;
+    });
+
+    // Voting demo logic (client-side mock)
+    let votesA = 100, votesB = 120;
+    function renderBars() {
+      const total = Math.max(1, votesA + votesB);
+      const pA = Math.round((votesA / total) * 100);
+      const pB = 100 - pA;
+      document.getElementById('barA').style.width = pA + '%';
+      document.getElementById('barB').style.width = pB + '%';
+      document.getElementById('percentA').textContent = pA + '%';
+      document.getElementById('percentB').textContent = pB + '%';
+      document.getElementById('countA').textContent = votesA;
+      document.getElementById('countB').textContent = votesB;
+    }
+    renderBars();
+
+    document.querySelectorAll('.voteBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const side = btn.getAttribute('data-vote');
+        if (side === 'A') votesA++; else votesB++;
+        btn.classList.add('scale-95');
+        setTimeout(() => btn.classList.remove('scale-95'), 120);
+        renderBars();
+      });
+    });
+
+    // Keyboard shortcuts: 1 for A, 2 for B
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '1') { votesA++; renderBars(); }
+      if (e.key === '2') { votesB++; renderBars(); }
+    });
+
+    // Share demo
+    const shareBtn = document.getElementById('shareBtn');
+    const toast = document.getElementById('toast');
+    shareBtn.addEventListener('click', async () => {
+      const url = location.href;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: 'Vote Post Battle', url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 1600);
+        }
+      } catch (e) {
+        console.warn('Share cancelled');
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="vi" class="h-full scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vote Post Battle</title>
+  <!-- Tailwind Play CDN (cho demo). Khi production, build Tailwind để tree-shake. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Apple Color Emoji', 'Segoe UI Emoji'] },
+          boxShadow: { soft: '0 10px 30px -12px rgba(0,0,0,.25)' },
+          colors: {
+            brand: {
+              DEFAULT: '#3b82f6',
+              50: '#eff6ff',
+              100: '#dbeafe',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html,
+    body {
+      font-family: Inter, ui-sans-serif, system-ui;
+    }
+
+    dialog[open] {
+      animation: fadeIn .18s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px) scale(.98)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 text-slate-900 dark:text-slate-100">
+  <!-- Header -->
+  <header
+    class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/50 border-b border-slate-200/60 dark:border-slate-800/60">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand/10 text-brand"><svg
+            xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3l2.39 4.84 5.34.78-3.86 3.76.91 5.31L12 15.9l-4.78 2.79.91-5.31L4.27 8.62l5.34-.78L12 3z" />
+          </svg></span>
+        <span class="text-lg font-semibold tracking-tight">Vote Post Battle</span>
+      </div>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="toggleTheme"
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60 transition">
+          <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 hidden dark:inline"
+            fill="currentColor">
+            <path
+              d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.8 1.8-1.8zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm8.83-19.16l-1.79-1.8-1.8 1.8 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.8 1.41 1.41 1.8-1.79-1.41-1.42zM17.24 19.16l-1.41 1.42 1.8 1.79 1.41-1.41-1.8-1.8zM12 5a7 7 0 100 14 7 7 0 000-14z" />
+          </svg>
+          <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 dark:hidden"
+            fill="currentColor">
+            <path d="M12 2a9.99 9.99 0 00-8.77 5.07A10 10 0 1012 2z" />
+          </svg>
+          <span class="hidden sm:inline">Chế độ tối</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-6xl px-4 py-8">
+    <section class="mb-6 text-center">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">So kè hai bài post Facebook</h1>
+      <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Chỉ người có quyền hạn (role hợp lệ) mới được vote.</p>
+    </section>
+
+    <!-- Battle -->
+    <section id="battle" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Card A -->
+      <article
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+        <header class="flex items-center gap-3 mb-4">
+          <span
+            class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 inline-flex items-center justify-center"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <path
+                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+            </svg></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold truncate">Nhóm Lễ tân</h3>
+            <p class="text-xs text-slate-500">30 tháng 8 lúc 23:10</p>
+          </div>
+        </header>
+        <p class="mb-5">Trong mỗi gương mặt, mỗi cái nắm tay của chúng tôi đều chứa đựng Chất Thép Tây Đô – sức mạnh từ
+          chất lượng, sự gắn kết từ chất người, và niềm tin bền chặt từ chất gốc rễ. Chính những giá trị ấy là ngọn lửa
+          soi đường cho tập thể Thép Tây Đô. Trong không khí tự hào của mùa thu lịch sử - giữa sắc đỏ rực rỡ của ngày Tổ
+          quốc hân hoan, chúng tôi cùng nhau khắc ghi tinh thần ấy, biến niềm tin thành hành động, biến khát vọng thành
+          dấu ấn, và biến sức mạnh tập thể thành động lực để tiến xa hơn.</p>
+        <div class="aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+          <img id="imgA" src="./le-tan.jpg" class="h-full w-full object-cover" alt="Post A" />
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-200/60 dark:bg-rose-900/40"><svg
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.61C11.09 5.01 12.76 4 14.5 4 17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg></span><span id="countA">84</span></div>
+
+          <a href="https://www.facebook.com/share/p/171HKSpFLb/" target="_blank"
+            class="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60">
+            Xem gốc
+          </a>
+          <button data-vote="A"
+            class="voteBtn rounded-xl bg-brand text-white font-semibold px-4 py-2.5 hover:bg-brand-600 active:bg-brand-700 transition">Vote</button>
+        </div>
+      </article>
+
+      <!-- Card B -->
+      <article
+        class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+        <header class="flex items-center gap-3 mb-4">
+          <span
+            class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 inline-flex items-center justify-center"><svg
+              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor">
+              <path
+                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+            </svg></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold truncate">P. KTTC</h3>
+            <p class="text-xs text-slate-500">30 tháng 8 lúc 21:14</p>
+          </div>
+        </header>
+        <p class="mb-10 pb-10">Gắn bó với công việc mỗi ngày, chúng tôi thấm nhuần tinh thần Chất Thép Tây Đô – đó là kỷ
+          luật,
+          sự kiên định và nỗ lực không ngừng. Tập thể luôn đồng lòng hoàn thành tốt nhiệm vụ, giữ vững niềm tin của
+          khách hàng. Tinh thần thép ấy chính là động lực để chúng tôi vươn xa hơn nữa.</p>
+        <div class="aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+          <img id="imgB" src="./kttc.jpg" class="h-full w-full object-cover" alt="Post B" />
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"><span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-200/60 dark:bg-rose-900/40"><svg
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.61C11.09 5.01 12.76 4 14.5 4 17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg></span><span id="countB">80</span></div>
+          <a href="https://www.facebook.com/share/p/1CSEsq6Ko2/" target="_blank"
+            class="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800/60">
+            Xem gốc
+          </a>
+          <button data-vote="B"
+            class="voteBtn rounded-xl bg-brand text-white font-semibold px-4 py-2.5 hover:bg-brand-600 active:bg-brand-700 transition">Vote</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Results -->
+    <section
+      class="mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 p-4 sm:p-5 shadow-soft">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div class="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="barA" class="h-full bg-brand/80 transition-all" style="width:50%"></div>
+          </div>
+          <div class="mt-2 text-sm font-medium"><span id="percentA">50%</span></div>
+        </div>
+        <div>
+          <div class="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="barB" class="h-full bg-fuchsia-600/80 transition-all" style="width:50%"></div>
+          </div>
+          <div class="mt-2 text-right text-sm font-medium"><span id="percentB">50%</span>
+          </div>
+        </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mx-auto max-w-6xl px-4 pb-10 pt-6 text-center text-sm text-slate-500">
+    Dangth © 2025.
+  </footer>
+
+  <!-- Modal nhập thông tin -->
+  <dialog id="voteDialog"
+    class="rounded-2xl p-0 w-[95vw] max-w-md bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl border border-slate-200 dark:border-slate-800">
+    <form id="voteForm" method="dialog" class="p-5">
+      <h2 class="text-lg font-semibold mb-1">Xác thực & ghi nhận phiếu</h2>
+      <p class="text-sm text-slate-500 mb-4">Chỉ áp dụng cho người có quyền hạn.</p>
+      <input type="hidden" id="choiceInput" />
+      <div class="grid gap-3">
+        <div>
+          <label class="text-sm mb-1 block" for="fullName">Họ tên</label>
+          <input id="fullName" required placeholder="Nguyễn Văn A"
+            class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-3 outline-none focus:ring-4 focus:ring-brand/30" />
+        </div>
+        <div>
+          <label class="text-sm mb-1 block" for="role">Chức vụ</label>
+          <input id="role" required placeholder="Trưởng phòng"
+            class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-4 py-3 outline-none focus:ring-4 focus:ring-brand/30" />
+        </div>
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button type="button" id="cancelDialog"
+          class="rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800/60">Hủy</button>
+        <button type="submit"
+          class="rounded-xl bg-brand text-white font-semibold px-4 py-2.5 hover:bg-brand-600 active:bg-brand-700">Gửi
+          phiếu</button>
+      </div>
+      <p id="formError" class="mt-3 text-sm text-rose-600 hidden">Chức vụ không có quyền vote.</p>
+    </form>
+  </dialog>
+
+  <script>
+    /*****************
+     * CONFIG
+     *****************/
+    // Firebase Realtime Database REST endpoint (KHÔNG có trailing slash)
+    // Ví dụ: https://your-project-id-default-rtdb.asia-southeast1.firebasedatabase.app
+    const FIREBASE_DB_URL = 'https://thep-taydo-default-rtdb.asia-southeast1.firebasedatabase.app';
+    // Nếu DB yêu cầu auth, thêm ID token (hoặc Database Secret – không khuyến nghị) vào đây
+    const FIREBASE_DB_AUTH = ''; // ví dụ: '?auth=ID_TOKEN'
+    const BATTLE_ID = 'battle-2025-08-30';
+
+    /*****************
+     * THEME
+     *****************/
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById('toggleTheme');
+    const pref = localStorage.getItem('theme');
+    if (pref === 'dark' || (!pref && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    }
+    toggleBtn?.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    /*****************
+     * MODAL & FORM
+     *****************/
+    const dialog = document.getElementById('voteDialog');
+    const voteForm = document.getElementById('voteForm');
+    const cancelDialog = document.getElementById('cancelDialog');
+
+    let pendingChoice = null; // 'A' | 'B'
+
+    function openVoteDialog(choice) {
+      pendingChoice = choice;
+      document.getElementById('choiceInput').value = choice;
+      if (dialog) {
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else dialog.setAttribute('open', '');
+      }
+    }
+    cancelDialog?.addEventListener('click', () => { dialog?.close(); });
+
+    document.querySelectorAll('.voteBtn').forEach(btn => {
+      btn.addEventListener('click', () => openVoteDialog(btn.getAttribute('data-vote')));
+    });
+
+    voteForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('fullName').value.trim();
+      const role = document.getElementById('role').value.trim();
+      const choice = pendingChoice;
+
+      // Lưu trực tiếp (không kiểm tra quyền)
+      const payload = { name, role, choice, ts: Date.now() };
+
+      try {
+        await fetch(`${FIREBASE_DB_URL}/votes/${BATTLE_ID}.json${FIREBASE_DB_AUTH}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        dialog?.close();
+        await fetchAndRender();
+      } catch (err) {
+        alert('Lỗi khi ghi phiếu. Kiểm tra cấu hình Firebase hoặc rules.');
+        console.error(err);
+      }
+    });
+
+    /*****************
+     * TÍNH % & HIỂN THỊ
+     *****************/
+    const countAEl = document.getElementById('countA');
+    const countBEl = document.getElementById('countB');
+    const barA = document.getElementById('barA');
+    const barB = document.getElementById('barB');
+    const percentAEl = document.getElementById('percentA');
+    const percentBEl = document.getElementById('percentB');
+
+    async function fetchAndRender() {
+      try {
+        const res = await fetch(`${FIREBASE_DB_URL}/votes/${BATTLE_ID}.json${FIREBASE_DB_AUTH}`);
+        const data = await res.json();
+        let a = 0, b = 0;
+        if (data) {
+          Object.values(data).forEach(v => {
+            if (!v || !v.choice) return;
+            const c = String(v.choice).toUpperCase();
+            if (c === 'A') a++;
+            else if (c === 'B') b++;
+          });
+        }
+
+        let pA = 50, pB = 50; // mặc định cân bằng khi chưa có phiếu
+        if (a + b > 0) {
+          pA = Math.round((a / (a + b)) * 100);
+          pB = 100 - pA;
+        }
+
+        // update thanh bar và % (KHÔNG động tới số tim cố định)
+        barA.style.width = pA + '%';
+        barB.style.width = pB + '%';
+        percentAEl.textContent = pA + '%';
+        percentBEl.textContent = pB + '%';
+      } catch (err) {
+        console.error('Fetch votes error', err);
+      }
+    }
+
+
+
+    // Khởi tạo + auto refresh
+    fetchAndRender();
+    setInterval(fetchAndRender, 10000);
+
+    // Phím tắt 1/2 để mở form vote nhanh
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '1') openVoteDialog('A');
+      if (e.key === '2') openVoteDialog('B');
+    });
+  </script>
+
+</body>
+
+</html>
